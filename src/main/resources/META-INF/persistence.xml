@@ -11,14 +11,16 @@
 
 
         <properties>
-            <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/osbb_diagram" />
+            <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/osbb_diagram_second" />
             <property name="javax.persistence.jdbc.user" value="root" />
             <property name="javax.persistence.jdbc.password" value="5A31BFCE9005A14572383C98F462BA2F" />
             <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver" />
 
             <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
             <property name="hibernate.show_sql" value="true"/>
-            <property name="hibernate.hbm2ddl.auto" value="create"/>
+            <property name="hibernate.hbm2ddl.auto" value="update"/>
+            <property name="hibernate.format_sql" value="true"/>
+
         </properties>
         
     </persistence-unit>

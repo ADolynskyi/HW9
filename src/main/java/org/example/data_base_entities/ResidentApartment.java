@@ -5,27 +5,33 @@ import jakarta.persistence.*;
 @Table(name = "resident_apartment")
 @Entity
 public class ResidentApartment {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
 
-    @EmbeddedId
-    private ResidentApartmentId ResidentApartmentId;
-
-    @Column(name="status")
+    @Column(name = "status")
     private String ownership;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "apartment_id")
-    Apartment apartment;
+    private Apartment apartment;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "resident_id")
-    Resident resident;
+    private Resident resident;
 
-    public org.example.data_base_entities.ResidentApartmentId getResidentApartmentId() {
-        return ResidentApartmentId;
+    public long getId() {
+        return id;
     }
 
-    public void setResidentApartmentId(org.example.data_base_entities.ResidentApartmentId residentApartmentId) {
-        ResidentApartmentId = residentApartmentId;
+
+    public Apartment getApartment() {
+        return apartment;
+    }
+
+    public Resident getResident() {
+        return resident;
     }
 
     public String getOwnership() {

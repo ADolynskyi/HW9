@@ -4,39 +4,43 @@ package org.example.data_base_entities;
 import jakarta.persistence.*;
 
 
-import java.io.Serializable;
+
 import java.util.ArrayList;
 import java.util.List;
 
 @Table(name = "buildings")
 @Entity
 
-public class Building implements Serializable {
+public class Building {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long building_id;
+    @Column(name = "building_id")
+    private long buildingId;
 
 
     private String name;
     private String street;
     private int number;
 
-    @OneToMany(mappedBy ="building", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Apartment> apartment =  new ArrayList<>();
+    @OneToMany(mappedBy = "building", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<Apartment> apartment = new ArrayList<>();
 
     public List<Apartment> getApartment() {
         return apartment;
     }
 
-    public long getBuilding_id(){
-        return building_id;
+    public long getBuildingId() {
+        return buildingId;
     }
-    public void setName(String name){
-        this.name=name;
-    }
-    public String getName(){
+
+    public String getName() {
         return name;
     }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getStreet() {
         return street;
     }

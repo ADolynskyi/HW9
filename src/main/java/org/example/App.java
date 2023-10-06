@@ -1,46 +1,70 @@
 package org.example;
 
 
-
-
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.Persistence;
+import org.apache.log4j.Logger;
+import org.example.data_base_entities.FlywayConfig;
 
-import jakarta.persistence.*;
-import org.example.data_base_entities.Apartment;
-import org.example.data_base_entities.Building;
-import org.example.data_base_entities.ResidentApartment;
-
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
 
 
-public class App 
-{
-    public static void main( String[] args )
-    {
-        EntityManagerFactory entityManagerFactory= Persistence.createEntityManagerFactory("OsbbPersistenceUnit");
-        EntityManager entityManager =entityManagerFactory.createEntityManager();
+public class App {
+    private static final Logger logger = Logger.getLogger(App.class);
 
+    public static void main(String[] args) {
 
-        List<Building> buildingNativeSql = building_processedWithNativeSQL(entityManager);
-        for(Building building: buildingNativeSql){
-            System.out.println(building.getName());
-            System.out.println(building.getStreet());
-            System.out.println(building.getNumber());
-            for(Apartment apartment: building.getApartment()){
-                System.out.println("\t:" +apartment.getId()+" Area:" +apartment.getArea());
-                for(ResidentApartment residentApartment: apartment.getResidentApartments()){
-                    System.out.println(residentApartment.getOwnership());
-                }
-            }
-        }
+        logger.info("Start of the program");
 
+        FlywayConfig.fwMigration();
+        EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("OsbbPersistenceUnit");
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+
+        List<Object[]> result = new CriteriaAPI().carEntranceCriteriaSelect(entityManager);
+        printResultToConsole(result);
+        String filePath = "JPA_example/result.txt";
+        printResultToFile(result, filePath);
+        entityManager.close();
+        entityManagerFactory.close();
     }
-    static List<Building> building_processedWithNativeSQL(EntityManager entityManager){
-        Query query =entityManager.createNativeQuery(
-                "SELECT * FROM buildings b WHERE building_id=4",
-                Building.class);
-        return query.getResultList();
+
+    public static void printResultToConsole(List<Object[]> list) {
+        for (Object[] result : list) {
+            System.out.print(result[0] + ", ");
+            System.out.print(result[1] + " ");
+            System.out.print(result[2] + ", ");
+            System.out.print(result[3] + ", ");
+            System.out.print(result[4] + ", ");
+            System.out.print(result[5] + ", ");
+            System.out.print(result[6] + ", ");
+            System.out.print(result[7] + ", ");
+            System.out.println(result[8] + ", ");
+        }
+    }
+
+    public static void printResultToFile(List<Object[]> list, String filePath) {
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+            writer.write("resident_id,first_name,family_name,email,apartment_id,area,name,street,number");
+            writer.newLine();
+
+            for (Object[] row : list) {
+                for (int i = 0; i < row.length; i++) {
+                    writer.write(String.valueOf(row[i]));
+                    if (i < row.length - 1) {
+                        writer.write(",");
+                    }
+                }
+                writer.newLine();
+            }
+
+            System.out.println("Results have been written to " + filePath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
