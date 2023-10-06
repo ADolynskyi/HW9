@@ -49,15 +49,19 @@ public class App {
     public static void printResultToFile(List<Object[]> list, String filePath) {
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
-            writer.write("resident_id,first_name,family_name,email,apartment_id,area,name,street,number");
+
             writer.newLine();
 
             for (Object[] row : list) {
                 for (int i = 0; i < row.length; i++) {
                     writer.write(String.valueOf(row[i]));
                     if (i < row.length - 1) {
-                        writer.write(",");
-                    }
+                        if(i==1){
+                            writer.write(" ");
+                        }
+                        else {
+                            writer.write(", ");
+                    }}
                 }
                 writer.newLine();
             }
